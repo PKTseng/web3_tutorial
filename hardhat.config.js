@@ -1,5 +1,7 @@
 require("@nomicfoundation/hardhat-toolbox");
-require("dotenv").config();
+// require("dotenv").config();
+require("@chainlink/env-enc").config();
+
 /** @type import('hardhat/config').HardhatUserConfig */
 
 // url 只能放 EVM 相容鏈的 RPC 端點，例如：
@@ -8,12 +10,20 @@ require("dotenv").config();
 // 這些 RPC 端點通常來自 Infura、Alchemy、Chainstack 或官方節點
 // 不能放 Solana、Aptos、Sui 等非 EVM 鏈的 RPC。
 
+const SEPOLIA_RPC_URL = process.env.SEPOLIA_RPC_URL;
+const PRIVATE_KEY = process.env.PRIVATE_KEY;
+const ETHERSCAN_API_KEY = process.env.ETHERSCAN_API_KEY;
+
 module.exports = {
   solidity: "0.8.28",
   networks: {
     sepolia: {
-      url: process.env.SEPOLIA_RPC_URL,
-      accounts: [process.env.PRIVATE_KEY],
+      url: SEPOLIA_RPC_URL,
+      accounts: [PRIVATE_KEY],
+      chainId: 11155111, // Sepolia 測試網的 Chain ID
     },
+  },
+  etherscan: {
+    apiKey: ETHERSCAN_API_KEY,
   },
 };
