@@ -2,6 +2,8 @@ require("@nomicfoundation/hardhat-toolbox");
 require("dotenv").config();
 // require("@chainlink/env-enc").config();
 
+require("./task");
+
 /** @type import('hardhat/config').HardhatUserConfig */
 
 // url 只能放 EVM 相容鏈的 RPC 端點，例如：
@@ -20,7 +22,7 @@ module.exports = {
   networks: {
     sepolia: {
       url: SEPOLIA_RPC_URL,
-      accounts: [PRIVATE_KEY, PRIVATE_KEY_1],
+      accounts: [PRIVATE_KEY],
       chainId: 11155111, // Sepolia 測試網的 Chain ID
     },
   },

@@ -1,6 +1,6 @@
 const { task } = require("hardhat/config");
 
-task("deploy-fundMe", "任務描述").setAction(async (taskArgs) => {
+task("deploy-fundMe", "部署跟驗證說明").setAction(async (taskArgs) => {
   const fundMeFactory = await ethers.getContractFactory("FundMe");
   const fundMe = await fundMeFactory.deploy(300);
 
@@ -21,7 +21,4 @@ task("deploy-fundMe", "任務描述").setAction(async (taskArgs) => {
   }
 });
 
-/** @type import('hardhat/config').HardhatUserConfig */
-module.exports = {
-  solidity: "0.8.28",
-};
+module.exports = {};
