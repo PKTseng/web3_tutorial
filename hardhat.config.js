@@ -1,6 +1,6 @@
 require("@nomicfoundation/hardhat-toolbox");
-// require("dotenv").config();
-require("@chainlink/env-enc").config();
+require("dotenv").config();
+// require("@chainlink/env-enc").config();
 
 /** @type import('hardhat/config').HardhatUserConfig */
 
@@ -12,6 +12,7 @@ require("@chainlink/env-enc").config();
 
 const SEPOLIA_RPC_URL = process.env.SEPOLIA_RPC_URL;
 const PRIVATE_KEY = process.env.PRIVATE_KEY;
+const PRIVATE_KEY_1 = process.env.PRIVATE_KEY_1;
 const ETHERSCAN_API_KEY = process.env.ETHERSCAN_API_KEY;
 
 module.exports = {
@@ -19,7 +20,7 @@ module.exports = {
   networks: {
     sepolia: {
       url: SEPOLIA_RPC_URL,
-      accounts: [PRIVATE_KEY],
+      accounts: [PRIVATE_KEY, PRIVATE_KEY_1],
       chainId: 11155111, // Sepolia 測試網的 Chain ID
     },
   },
