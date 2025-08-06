@@ -25,6 +25,10 @@ module.exports = {
       accounts: [PRIVATE_KEY],
       chainId: 11155111, // Sepolia 測試網的 Chain ID
     },
+    // ganache: {
+    //   url: "HTTP://127.0.0.1:7545",
+    //   chainId: 1337,
+    // },
   },
   etherscan: {
     apiKey: ETHERSCAN_API_KEY,
