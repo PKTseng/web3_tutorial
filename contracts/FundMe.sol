@@ -26,9 +26,8 @@ contract FundMe {
 
   bool public getFundSuccess = false;
 
-  constructor(uint256 _lockTime) {
-    // sepolia testnet
-    dataFeed = AggregatorV3Interface(0x694AA1769357215DE4FAC081bf1f309aDC325306);
+  constructor(uint256 _lockTime, address _dataFeed) {
+    dataFeed = AggregatorV3Interface(_dataFeed);
     owner = msg.sender;
     deploymentTimestamp = block.timestamp;
     lockTime = _lockTime;
