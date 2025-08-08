@@ -1,21 +1,29 @@
-const { ethers } = require("hardhat");
+const { ethers, deployments, getNamedAccounts } = require("hardhat");
 const { expect } = require("chai");
 
-describe("test fundme contract", async function () {
+describe("test fundMe contract", async function () {
+  let fundMe;
+  let firstAccount;
+
+  beforeEach(async function () {
+    await deployments.fixture("all");
+
+    // 獲取已部署的合約實例
+    const fundMeDeployment = await deployments.get("FundMe");
+    fundMe = await ethers.getContractAt("FundMe", fundMeDeployment.address);
+
+    // 獲取部署時使用的帳戶
+    const accounts = await getNamedAccounts();
+    firstAccount = accounts.firstAccount;
+  });
+
   it("test if owner is msg.sender", async function () {
-    const [firstAccount] = await ethers.getSigners();
-
-    // 獲取名為 "fundMe" 的智能合約工廠，用於部署合約實例
-    const fundMeFactory = await ethers.getContractFactory("FundMe");
-
-    // 使用工廠部署合約，傳入 300 作為建構函數參數
-    const fundMe = await fundMeFactory.deploy(300, "0x694AA1769357215DE4FAC081bf1f309aDC325306");
-
-    // 等待合約部署完成並確認在區塊鏈上（注意：原代碼有錯字，應為 waitForDeployment）
     await fundMe.waitForDeployment();
+    expect(await fundMe.owner()).to.equal(firstAccount);
+  });
 
-    // 注意：fundMe.owner() 是 address string
-    // firstAccount 是 Signer，所以要轉成 address 來比
-    expect(await fundMe.owner()).to.equal(await firstAccount.getAddress());
+  it("test if the datafeed is assigned currently", async function () {
+    await fundMe.waitForDeployment();
+    expect(await fundMe.dataFeed()).to.equal("0x694AA1769357215DE4FAC081bf1f309aDC325306");
   });
 });
