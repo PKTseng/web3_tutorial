@@ -18,13 +18,24 @@ module.exports = async ({ getNamedAccounts, deployments }) => {
     dataFeedAddr = NETWORK_CONFIG[network.config.chainId].ethUsdDatafeed;
   }
 
-  log("mockDataFeed 地址 :", dataFeedAddr);
+  // log("mockDataFeed 地址 :", dataFeedAddr);
 
   const fundMe = await deploy("FundMe", {
     from: firstAccount,
     args: [LOCK_TIME, dataFeedAddr],
     log: true,
   });
+
+  // log("fundMe.address", fundMe.address);
+
+  if (hre.network.config.chainId === 11155111 && process.env.ETHERSCAN_API_KEY) {
+    await hre.run("verify:verify", {
+      address: fundMe.address,
+      constructorArguments: [LOCK_TIME, dataFeedAddr],
+    });
+  } else {
+    log("Network is not sepolia, verification skipped...");
+  }
 
   log(`✅ FundMe 合約部署成功！`);
   log(`📍 合約地址: ${fundMe.address}`);
