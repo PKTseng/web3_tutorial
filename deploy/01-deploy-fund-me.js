@@ -8,31 +8,33 @@ module.exports = async ({ getNamedAccounts, deployments }) => {
   log("----------------------------------------------------");
   log("正在部署 FundMe 合約...");
   log("部署帳戶:", firstAccount);
-  // log("network", network); // 查看 network 詳細資訊
 
-  let dataFeedAddr;
-  if (DEVELOPMENT_CHAINS.includes(network.name)) {
-    const mockV3Aggregator = await get("MockV3Aggregator");
-    dataFeedAddr = mockV3Aggregator.address;
-  } else {
-    dataFeedAddr = NETWORK_CONFIG[network.config.chainId].ethUsdDatafeed;
-  }
+  // 1) 依網路取得 dataFeed
+  const dataFeedAddr = DEVELOPMENT_CHAINS.includes(network.name)
+    ? (await get("MockV3Aggregator")).address
+    : NETWORK_CONFIG[network.config.chainId].ethUsdDatafeed;
 
-  // log("mockDataFeed 地址 :", dataFeedAddr);
+  // 2) 讀取全域 blockConfirmations（fallback 5）
+  const waitBlockConfirmations = network.config.blockConfirmations || 5;
 
+  // 3) 部署時就等確認數
   const fundMe = await deploy("FundMe", {
     from: firstAccount,
     args: [LOCK_TIME, dataFeedAddr],
     log: true,
+    waitConfirmations: waitBlockConfirmations,
   });
 
-  // log("fundMe.address", fundMe.address);
+  // 4) sepolia 才驗證；驗證前額外等 5 秒，避免索引延遲
+  if (network.name === "sepolia" && process.env.ETHERSCAN_API_KEY) {
+    log("等待 5 秒再驗證（Etherscan 索引緩衝）...");
+    await new Promise((r) => setTimeout(r, 5000));
 
-  if (hre.network.config.chainId === 11155111 && process.env.ETHERSCAN_API_KEY) {
     await hre.run("verify:verify", {
       address: fundMe.address,
       constructorArguments: [LOCK_TIME, dataFeedAddr],
     });
+    log("✅ Verified on Etherscan");
   } else {
     log("Network is not sepolia, verification skipped...");
   }

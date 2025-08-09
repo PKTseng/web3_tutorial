@@ -20,11 +20,13 @@ const ETHERSCAN_API_KEY = process.env.ETHERSCAN_API_KEY;
 
 module.exports = {
   solidity: "0.8.28",
+  // defaultNetwork: "hardhat", // 可以省略，因為這就是預設值
   networks: {
     sepolia: {
       url: SEPOLIA_RPC_URL,
       accounts: [PRIVATE_KEY, PRIVATE_KEY_1],
       chainId: 11155111, // Sepolia 測試網的 Chain ID
+      blockConfirmations: 5, // 建議 5~10
     },
     // ganache: {
     //   url: "HTTP://127.0.0.1:7545",
