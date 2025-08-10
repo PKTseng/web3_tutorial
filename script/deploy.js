@@ -33,9 +33,7 @@ const main = async () => {
     console.log("第一次投資後合約餘額：" + balanceOfContract);
 
     // 4. 第二次投資（指定第二個帳戶）
-    // const fundTxWithSecondAccount = await fundMe.connect(secondAccount).fund({
-    // value: ethers.parseEther("1"),
-    // });
+    // const fundTxWithSecondAccount = await fundMe.connect(secondAccount).fund({ value: ethers.parseEther("1") });
     // await fundTxWithSecondAccount.wait();
 
     // 5. 再次檢查合約餘額
