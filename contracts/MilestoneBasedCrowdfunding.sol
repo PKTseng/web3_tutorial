@@ -44,8 +44,6 @@ contract MilestoneBasedCrowdfunding {
     require(block.timestamp < deadline, "Time is end");
     require(msg.value > 0, "Need more ETH");
 
-    contributor[msg.sender] = msg.value;
-
     contributor[msg.sender] += msg.value;
     totalRaised += msg.value;
   }
