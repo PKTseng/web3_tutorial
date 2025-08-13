@@ -11,7 +11,7 @@ contract MilestoneBasedCrowdfunding {
   mapping(address => uint256) public contributor;
 
   struct Milestone {
-    string descript;
+    string description;
     uint256 unlockAmount;
     bool isPaid;
     uint256 voteCount;
@@ -26,13 +26,28 @@ contract MilestoneBasedCrowdfunding {
     deadline = _deadline;
   }
 
-  function addMilestone() public {
+  function addMilestone(string memory _description, uint256 _amount) public {
     require(msg.sender == manager, "Only manager");
+    require(block.timestamp < deadline, "Time is no yet");
+
+    milestoneList.push(
+      Milestone({
+        description: _description,
+        unlockAmount: _amount,
+        isPaid: true,
+        voteCount: 0
+      })
+    );
   }
 
   function contribute() public payable {
     require(block.timestamp < deadline, "Time is end");
+    require(msg.value > 0, "Need more ETH");
+
     contributor[msg.sender] = msg.value;
+
+    contributor[msg.sender] += msg.value;
+    totalRaised += msg.value;
   }
 
   function requestWithdrawal() public {
@@ -46,19 +61,21 @@ contract MilestoneBasedCrowdfunding {
 
   function executeWithdrawal(uint _milestone) public {
     require(msg.sender == manager, "Only manager");
-    require(totalRaised > fundingGoal, "Crowdfunding: Funding goal not reached.");
+    require(
+      totalRaised > fundingGoal,
+      "Crowdfunding: Funding goal not reached."
+    );
     require(_milestone < milestoneList.length, "Crowdfunding is not exist");
   }
 
   function claimRefund() public {
-    require(block.timestamp > deadline, unicode"時間未到");
-    require(totalRaised < fundingGoal, unicode"資金已達標");
+    require(block.timestamp > deadline, "Time is not yet");
+    require(totalRaised < fundingGoal, "no Eth");
 
-    uint256 amountToRefund = contributor[msg.sender];
+    uint256 amount = contributor[msg.sender];
 
     contributor[msg.sender] = 0;
-
-    (bool success, ) = payable(msg.sender).call{ value: amountToRefund }("");
+    (bool success, ) = payable(msg.sender).call{ value: amount }("");
     require(success, "Transfer is fail");
   }
 }
