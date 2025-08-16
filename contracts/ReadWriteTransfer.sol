@@ -27,9 +27,9 @@ contract ReadWriteTransfer {
     uint256 _amount
   ) public {
     uint256 currentBalance = getBalance(msg.sender);
-    require(currentBalance > _amount, "Insufficient amount");
+    require(currentBalance >= _amount, "Insufficient amount");
 
-    transfer(_to, currentBalance);
+    transfer(_to, _amount);
   }
 
   function withdraw(uint256 _amount) public {
