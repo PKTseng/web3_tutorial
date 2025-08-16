@@ -33,7 +33,7 @@ contract ReadWriteTransfer {
   }
 
   function withdraw(uint256 _amount) public {
-    require(balances[msg.sender] > _amount, "In");
+    require(balances[msg.sender] >= _amount, "In");
     balances[msg.sender] -= _amount;
 
     (bool success, ) = payable(msg.sender).call{ value: _amount }("");
